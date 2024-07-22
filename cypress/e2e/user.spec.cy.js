@@ -1,46 +1,25 @@
 import userData from '../fixtures/users/user-data.json'
+import LoginPage from '../pages/loginPage.js'
+import DashboardPage from '../pages/dashboardPage.js'
+import MenuPage from '../pages/menuPage.js'
+import PersonalPage from '../pages/personalPage.js'
+
+const loginPage = new LoginPage()
+const dashboardPage = new DashboardPage()
+const menuPage = new MenuPage()
+const personalPage = new PersonalPage()
 
 describe('Orange HRM tests', () => {
 
-  const selectorsList = {
-    UsernameField:"[name ='username']",
-    PasswordField: "[name='password']",
-    LoginButton: "[type='submit']",
-    dashboardGrid: '.orangehrm-dashboard-grid',
-    WrongCredentialAlert: "[role='alert']",
-    myInfoButton: '[href="/web/index.php/pim/viewMyDetails"]',
-    firstName: "[name='firstName']",
-    middleName: "[name='middleName']",
-    lastName: "[name='lastName']",
-    genericField: ".oxd-input.oxd-input--active",
-    dateCloseButton: ".--close",
-    saveButton: "[data-v-8c6e0396=''][type='submit']"
-  }
-
-
   it.only('user info update - success', () => {
-    cy.visit('/auth/login')
-    cy.get(selectorsList.UsernameField).type(userData.userSuccess.username)
-    cy.get(selectorsList.PasswordField).type(userData.userSuccess.password)
-    cy.get(selectorsList.LoginButton).click()
-    cy.location('pathname').should('equal', '/web/index.php/dashboard/index')
-    cy.get(selectorsList.dashboardGrid)
+    
+    loginPage.accessLoginPage()
+    loginPage.loginWithUser(userData.userSuccess.username,userData.userSuccess.password)
 
-    cy.get(selectorsList.myInfoButton).click()
-    cy.get(selectorsList.firstName).clear().type('NameTest')
-    cy.get(selectorsList.middleName).clear().type('middleTest')
-    cy.get(selectorsList.lastName).clear().type('lastTest')
-    cy.get(selectorsList.genericField).eq(3).clear().type('IDTest')
-    cy.get(selectorsList.genericField).eq(4).clear().type('Other TEst')
-    cy.get(selectorsList.genericField).eq(5).clear().type('DriverTEst')
-    cy.get(selectorsList.genericField).eq(6).clear().type('2023-04-12')
-    cy.get(selectorsList.dateCloseButton).click()
-    cy.get(selectorsList.saveButton).click()
-    cy.get('body').should('contain', 'Successfully Updated')
-    
-    
-    
+    dashboardPage.VerifyDashPage()
+    menuPage.ClickMyInfo()
 
+    personalPage.FillData()
 
   })
 
